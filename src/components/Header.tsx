@@ -17,7 +17,7 @@ const CurrentDate = async () => {
 const Header = () => {
   return (
     <header className="mt-5 w-full">
-      <div className="relative flex flex-col items-center justify-center gap-3 px-4 sm:flex-row sm:gap-3">
+      <div className="relative flex flex-col items-center justify-center gap-3 px-4 sm:flex-row sm:gap-4">
         {/* Logo */}
         <Image
           src="/favicon.ico"
@@ -25,7 +25,7 @@ const Header = () => {
           width={44}
           height={44}
           priority
-          className="h-10 w-10 object-contain sm:h-11 sm:w-11"
+          className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11"
         />
 
         {/* Website Name and Date */}
@@ -42,7 +42,7 @@ const Header = () => {
         </div>
 
         {/* Authentication Buttons */}
-        <div className="flex items-center gap-2 sm:absolute sm:right-4">
+        <div className="flex flex-wrap items-center justify-center gap-2 lg:absolute lg:right-4">
           <Link
             href="/sign-in"
             type="button"
@@ -62,7 +62,7 @@ const Header = () => {
       </div>
 
       {/* Navigation */}
-      <div className="mt-4">
+      <div className="mt-4 w-full">
         <Suspense fallback={<NavLinkFallback />}>
           <NavLink />
         </Suspense>

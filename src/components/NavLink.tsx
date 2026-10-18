@@ -29,11 +29,14 @@ function isCategoryResponse(value: unknown): value is { data: unknown[] } {
 export function NavLinkFallback() {
   return (
     <div>
-      <ul className="flex gap-5 justify-center items-center">
+      <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 sm:gap-x-5">
         <li>
           <Link href="/">হোম</Link>
         </li>
-        <li aria-live="polite" className="text-sm text-gray-500">
+        <li
+          aria-live="polite"
+          className="max-w-full text-center text-sm text-gray-500"
+        >
           বিভাগগুলো লোড হচ্ছে...
         </li>
       </ul>
@@ -69,17 +72,22 @@ const NavLink = async () => {
 
   return (
     <div>
-      <ul className="flex gap-5 justify-center items-center">
+      <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 sm:gap-x-5">
         <li>
           <Link href="/">হোম</Link>
         </li>
         {filteredNavLink.map((n) => (
-          <li key={n.slug}>
-            <Link href={n.slug}>{n.title}</Link>
+          <li key={n.slug} className="max-w-full">
+            <Link href={n.slug} className="block break-words">
+              {n.title}
+            </Link>
           </li>
         ))}
         {failedToLoad && (
-          <li role="status" className="text-sm text-gray-500">
+          <li
+            role="status"
+            className="max-w-full text-center text-sm text-gray-500"
+          >
             বিভাগগুলো এখন লোড করা যাচ্ছে না
           </li>
         )}
