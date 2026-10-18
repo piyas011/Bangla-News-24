@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { connection } from "next/server";
+import { io } from "next/cache";
 import { Suspense } from "react";
-import NavLink from "./NavLink";
+import NavLink, { NavLinkFallback } from "./NavLink";
 import Link from "next/link";
 
 const CurrentDate = async () => {
-  await connection();
+  await io();
 
   const date = new Date().toLocaleDateString("bn-BD", {
     dateStyle: "full",
@@ -63,7 +63,9 @@ const Header = () => {
 
       {/* Navigation */}
       <div className="mt-4">
-        <NavLink />
+        <Suspense fallback={<NavLinkFallback />}>
+          <NavLink />
+        </Suspense>
       </div>
     </header>
   );

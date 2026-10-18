@@ -1,17 +1,107 @@
-import Marquee from "@/components/Marquee";
-import { NewsArticle } from "@/types/type";
+import type { NewsArticle } from "@/types/type";
 import Image from "next/image";
+import { io } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function Home() {
-  const res = await fetch("https://news-api-v2.vercel.app/api/news/sections");
+type HomeArticle = Pick<
+  NewsArticle,
+  "id" | "title" | "description" | "link" | "imageUrl" | "imageAlt" | "category"
+>;
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch news sections");
+function isHomeArticle(value: unknown): value is HomeArticle {
+  if (typeof value !== "object" || value === null) return false;
+
+  return (
+    "id" in value &&
+    typeof value.id === "string" &&
+    "title" in value &&
+    typeof value.title === "string" &&
+    "description" in value &&
+    (typeof value.description === "string" || value.description === null) &&
+    "link" in value &&
+    (typeof value.link === "string" || value.link === null) &&
+    "imageUrl" in value &&
+    (typeof value.imageUrl === "string" || value.imageUrl === null) &&
+    "imageAlt" in value &&
+    (typeof value.imageAlt === "string" || value.imageAlt === null) &&
+    "category" in value &&
+    typeof value.category === "string"
+  );
+}
+
+function getHomeArticles(value: unknown): HomeArticle[] {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("data" in value) ||
+    !Array.isArray(value.data)
+  ) {
+    return [];
   }
 
-  const result = await res.json();
-  const mostNews: NewsArticle[] = result.data?.[0]?.articles ?? [];
+  const firstSection = value.data[0];
+  if (
+    typeof firstSection !== "object" ||
+    firstSection === null ||
+    !("articles" in firstSection) ||
+    !Array.isArray(firstSection.articles)
+  ) {
+    return [];
+  }
+
+  return firstSection.articles.filter(isHomeArticle);
+}
+
+function HomeFallback() {
+  return (
+    <main className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <section
+          aria-label="প্রধান সংবাদ"
+          className="min-w-0 rounded-lg border border-gray-200 p-5 lg:col-span-2"
+        >
+          <p role="status" aria-live="polite" className="text-sm text-gray-500">
+            সর্বশেষ সংবাদ লোড হচ্ছে...
+          </p>
+        </section>
+        <aside className="min-w-0 rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+          <p role="status" aria-live="polite" className="text-sm text-gray-500">
+            সর্বাধিক পঠিত সংবাদ লোড হচ্ছে...
+          </p>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<HomeFallback />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+async function HomeContent() {
+  await io();
+
+  let mostNews: HomeArticle[] = [];
+
+  try {
+    const res = await fetch("https://news-api-v2.vercel.app/api/news/sections", {
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!res.ok) {
+      throw new Error(`News sections request failed with status ${res.status}`);
+    }
+
+    mostNews = getHomeArticles(await res.json());
+  } catch (error) {
+    console.error("Failed to load news sections", error);
+  }
+
   const featuredNews = mostNews[0];
   const remainingNews = mostNews.slice(1);
 

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Noto_Serif_Bengali } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
+import Marquee, { MarqueeFallback } from "@/components/Marquee";
 
 const NotoSerifBengali = Noto_Serif_Bengali({
   subsets: ["latin", "bengali"],
 });
-
-import Marquee from "@/components/Marquee";
 
 export const metadata: Metadata = {
   title: {
@@ -49,7 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <nav>
           <Header />
         </nav>
-        <Marquee />
+        <Suspense fallback={<MarqueeFallback />}>
+          <Marquee />
+        </Suspense>
         <main>{children}</main>
       </body>
     </html>
