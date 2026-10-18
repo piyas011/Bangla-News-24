@@ -20,7 +20,7 @@ const Header = () => {
           <small>{date}</small>
         </div>
       </div>
-      <div>
+      <div className="mt-2">
         <NavLink />
       </div>
     </div>
