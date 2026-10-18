@@ -2,6 +2,7 @@ import Image from "next/image";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import NavLink from "./NavLink";
+import Link from "next/link";
 
 const CurrentDate = async () => {
   await connection();
@@ -42,19 +43,21 @@ const Header = () => {
 
         {/* Authentication Buttons */}
         <div className="flex items-center gap-2 sm:absolute sm:right-4">
-          <button
+          <Link
+            href="/sign-in"
             type="button"
             className="btn border border-gray-200 bg-transparent font-semibold text-gray-700 hover:border-red-600 hover:text-red-600"
           >
             সাইন ইন
-          </button>
+          </Link>
 
-          <button
+          <Link
+            href="/sign-up"
             type="button"
             className="btn border-0 bg-red-600 font-bold text-white hover:bg-red-700"
           >
             সাইন আপ
-          </button>
+          </Link>
         </div>
       </div>
 
