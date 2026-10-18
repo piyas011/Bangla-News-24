@@ -1,4 +1,4 @@
-interface BBCBengali {
+export interface BBCBengali {
   slug: string;
   title: string;
   topicId: string | null;

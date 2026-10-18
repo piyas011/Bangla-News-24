@@ -1,3 +1,4 @@
+import { BBCBengali } from "@/types/type";
 import Link from "next/link";
 
 const NavLink = async () => {

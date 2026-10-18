@@ -7,7 +7,7 @@ const Header = () => {
   });
 
   return (
-    <div>
+    <div className="mt-5">
       <div className="flex justify-center items-center gap-2">
         <div>
           <p></p>
